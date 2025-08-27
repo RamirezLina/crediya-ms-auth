@@ -6,7 +6,11 @@ import reactor.core.publisher.Mono;
 
 
 public interface UserRepository {
-    
+
     Mono<User> save(User newUser);
+
     Flux<User> findAll();
+
+    Mono<Boolean> existsByEmailOrIdentification(String email, Long identification);
+
 }

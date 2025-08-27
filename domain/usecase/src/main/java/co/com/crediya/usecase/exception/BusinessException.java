@@ -5,7 +5,7 @@ import lombok.Getter;
 public class BusinessException extends RuntimeException {
 
     public enum Type{
-        EMAIL_ALREADY_EXISTS("Ya existe una cuenta asociada al correo electrónico: %s.");
+        EMAIL_ALREADY_EXISTS("Ya existe una cuenta asociada al correo electrónico o número de identificación");
         private final String message;
 
         public BusinessException build(){
