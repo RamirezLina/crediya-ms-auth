@@ -21,7 +21,7 @@ import java.util.Set;
 @Component
 @RequiredArgsConstructor
 @Slf4j
-public class Handler {
+public class UserHandler {
     private final UserUseCase userUseCase;
     private final UserDtoMapper userDtoMapper;
     private final Validator validator;
@@ -41,7 +41,17 @@ public class Handler {
                 .flatMap(savedTask -> ServerResponse.ok()
                         .contentType(MediaType.APPLICATION_JSON)
                         .bodyValue(savedTask))
-                .doOnError(Handler::logError);
+                .doOnError(UserHandler::logError);
+    }
+
+    public Mono<ServerResponse> listenGetAllUsers(ServerRequest serverRequest) {
+        log.info("GET  {} : Obteniendo los usuarios registrados", userPath.getUsers() );
+        return ServerResponse.ok()
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(userUseCase.getAllUsers()
+                        .map(userDtoMapper::toDto)
+                        .doOnError(UserHandler::logError), UserDto.class);
+
     }
 
     private Mono<UserDto> validateDto(UserDto dto) {
@@ -55,13 +65,5 @@ public class Handler {
     }
 
 
-    public Mono<ServerResponse> listenGetAllUsers(ServerRequest serverRequest) {
-        log.info("GET  {} : Obteniendo los usuarios registrados", userPath.getUsers() );
-        return ServerResponse.ok()
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(userUseCase.getAllUsers()
-                        .map(userDtoMapper::toDto)
-                        .doOnError(Handler::logError), UserDto.class);
-                
-    }
+    
 }
