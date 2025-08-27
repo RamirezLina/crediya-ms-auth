@@ -7,19 +7,16 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @RequiredArgsConstructor
-public class UserUseCase implements IUserUseCase{
+public class UserUseCase {
     
     private final UserRepository userRepository;
 
-
-    @Override
-    public Mono<User> save(User newUser) {
+    public Mono<User> saveUser(User newUser) {
         newUser.validate();
         return userRepository.save(newUser);
     }
 
-    @Override
-    public Flux<User> findAll() {
+    public Flux<User> getAllUsers() {
         return userRepository.findAll();
     }
 }
