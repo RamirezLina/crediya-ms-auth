@@ -51,7 +51,6 @@ public class Handler {
         log.info("GET  {} : Obteniendo los usuarios registrados", userPath.getUsers() );
         return ServerResponse.ok()
                 .contentType(MediaType.APPLICATION_JSON)
-                .contentType(MediaType.APPLICATION_NDJSON)
                 .body(userUseCase.getAllUsers().map(userDtoMapper::toDto), UserDto.class);
     }
 }
