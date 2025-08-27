@@ -2,7 +2,6 @@ package co.com.crediya.model.user;
 import lombok.*;
 
 import java.time.LocalDate;
-import java.util.UUID;
 
 @Getter
 @Setter
