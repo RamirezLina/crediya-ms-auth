@@ -33,3 +33,19 @@ adapters:
 routes:
   paths:
     users: "/api/v1/usuarios"
+    
+springdoc:
+  api-docs:
+    enabled: true
+  swagger-ui:
+    enabled: true
+    url: /openapi.yaml
+    path: /doc/swagger-ui.html
+  paths-to-match: /api/**
+  
+app:
+  openapi:
+    title: "CREDIYA: ms-authentication"
+    description: "Api para la gestion de usuarios de la plataforma CrediYa"
+    version: 1.0.0
+    server: http://localhost:8080
