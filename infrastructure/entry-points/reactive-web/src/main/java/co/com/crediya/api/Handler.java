@@ -4,16 +4,19 @@ import co.com.crediya.api.config.UserPath;
 import co.com.crediya.api.dto.UserDto;
 import co.com.crediya.api.mapper.UserDtoMapper;
 import co.com.crediya.usecase.user.UserUseCase;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Validator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
-import org.springframework.validation.BeanPropertyBindingResult;
-import org.springframework.validation.beanvalidation.SpringValidatorAdapter;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
+import org.springframework.web.server.ServerWebInputException;
 import reactor.core.publisher.Mono;
+
+import java.util.Set;
 
 @Component
 @RequiredArgsConstructor
@@ -23,27 +26,32 @@ public class Handler {
     private final UserDtoMapper userDtoMapper;
     private final Validator validator;
     private final UserPath userPath;
-    
 
+    private static void logError(Throwable exception) {
+        log.error("Error Message: {} \n Stack trace: {}", exception.getMessage(), exception.getStackTrace());
+    }
+    
     public Mono<ServerResponse> listenSaveUser(ServerRequest serverRequest) {
         return serverRequest.bodyToMono(UserDto.class)
-                .doOnNext(this::validateDto)
+                .switchIfEmpty(Mono.error(new ServerWebInputException("El cuerpo de la solicitud es requerido")))
+                .flatMap(this::validateDto)                   
                 .map(userDtoMapper::toModel)
                 .flatMap(userUseCase::saveUser)
                 .map(userDtoMapper::toDto)
                 .flatMap(savedTask -> ServerResponse.ok()
                         .contentType(MediaType.APPLICATION_JSON)
-                        .bodyValue(savedTask));
+                        .bodyValue(savedTask))
+                .doOnError(Handler::logError);
     }
 
-    private void validateDto(UserDto userDto) {
-        var errors = new BeanPropertyBindingResult(userDto, UserDto.class.getName());
-        new SpringValidatorAdapter(validator).validate(userDto, errors);
-        if (errors.hasErrors()) {
-            throw new IllegalArgumentException(errors.getAllErrors().get(0).getDefaultMessage());
+    private Mono<UserDto> validateDto(UserDto dto) {
+        Set<ConstraintViolation<UserDto>> violations = validator.validate(dto) ;
+        if (!violations.isEmpty()) {
+            return Mono.error(new ConstraintViolationException(violations));
         }
-        log.info(" POST  {} : Se inicia el guardado del usuario con email {}", userPath.getUsers(), userDto.email() );
-        
+        log.info("POST {} : Se inicia el guardado del usuario con email {}", userPath.getUsers(), dto.email());
+        return Mono.just(dto);
+                
     }
 
 
@@ -51,6 +59,9 @@ public class Handler {
         log.info("GET  {} : Obteniendo los usuarios registrados", userPath.getUsers() );
         return ServerResponse.ok()
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(userUseCase.getAllUsers().map(userDtoMapper::toDto), UserDto.class);
+                .body(userUseCase.getAllUsers()
+                        .map(userDtoMapper::toDto)
+                        .doOnError(Handler::logError), UserDto.class);
+                
     }
 }
