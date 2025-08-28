@@ -22,8 +22,8 @@ public class GlobalErrorAttributes extends DefaultErrorAttributes {
         errorAttributes.put("generatedInMethod", error.getStackTrace()[0].getMethodName());
         errorAttributes.put("generatedInLine", error.getStackTrace()[0].getLineNumber());
         
-        String errorCauseMessage = error.getCause().getMessage();
-        errorAttributes.put("InitCause", error.getCause() == null? "Validacion de negocio no superada": errorCauseMessage);
+        String errorCauseMessage = error.getCause() == null ? "Validacion de negocio no superada" : error.getCause().getMessage();
+        errorAttributes.put("InitCause", errorCauseMessage);
         return errorAttributes;
     }
 
