@@ -14,5 +14,8 @@ public class UserValidations {
     public static final String INVALID_ROL = "El Rol no puede ser nulo";
     public static final String INVALID_SALARY = "El salario base no puede ser nulo";
     public static final String ROL_NEGATIVE = "El Rol no puede ser negativo";
+
+    private UserValidations() {
+    }
 }
 

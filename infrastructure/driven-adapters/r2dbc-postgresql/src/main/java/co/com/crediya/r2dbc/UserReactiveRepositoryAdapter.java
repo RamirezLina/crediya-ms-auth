@@ -28,9 +28,9 @@ public class UserReactiveRepositoryAdapter extends ReactiveAdapterOperations<
     }
 
     @Override
-    public Mono<User> save(User User) {
+    public Mono<User> save(User user) {
         log.info("Guardando usuario en base de datos");
-        return super.save(User)
+        return super.save(user)
                 .doOnError(UserReactiveRepositoryAdapter::logError)
                 .onErrorMap(DataIntegrityViolationException.class, DatabaseException.Type.ROL_NOT_EXISTS::build);
 

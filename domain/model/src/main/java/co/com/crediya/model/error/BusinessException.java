@@ -12,7 +12,7 @@ public class BusinessException extends RuntimeException {
 
         public BusinessException build(String personalizedMessage){
             String finalMessage = String.format(this.message, personalizedMessage);
-            return new BusinessException(this, finalMessage);
+            return new BusinessException(finalMessage);
         }
 
         Type(String message) {
@@ -20,16 +20,13 @@ public class BusinessException extends RuntimeException {
         }
     }
 
-    private final BusinessException.Type type;
 
     private BusinessException(BusinessException.Type type){
         super(type.message);
-        this.type = type;
     }
 
-    public BusinessException(BusinessException.Type type, String personalizedMessage){
+    public BusinessException(String personalizedMessage){
         super(personalizedMessage);
-        this.type = type;
     }
 
 }

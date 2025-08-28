@@ -20,16 +20,13 @@ public class DatabaseException extends RuntimeException {
         }
     }
 
-    private final DatabaseException.Type type;
 
     private DatabaseException(DatabaseException.Type type){
         super(type.message);
-        this.type = type;
     }
 
     private DatabaseException(DatabaseException.Type type, Throwable throwable){
         super(type.message, throwable);
-        this.type = type;
     }
 
 }

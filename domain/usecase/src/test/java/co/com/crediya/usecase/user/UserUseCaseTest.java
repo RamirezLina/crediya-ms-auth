@@ -15,7 +15,6 @@ import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -37,7 +36,7 @@ class UserUseCaseTest {
 
     @Test
     void saveUser_shouldSave_whenUserIsValidAndNotExists() {
-        when(userRepository.existsByEmailOrIdentification(eq("juan@mail.com"), eq(123L))).thenReturn(Mono.just(false));
+        when(userRepository.existsByEmailOrIdentification("juan@mail.com", 123L)).thenReturn(Mono.just(false));
         when(userRepository.save(any(User.class))).thenReturn(Mono.just(user));
 
         StepVerifier.create(userUseCase.saveUser(user))
@@ -47,7 +46,7 @@ class UserUseCaseTest {
 
     @Test
     void saveUser_shouldReturnError_whenUserAlreadyExists() {
-        when(userRepository.existsByEmailOrIdentification(eq("juan@mail.com"), eq(123L)))
+        when(userRepository.existsByEmailOrIdentification("juan@mail.com", 123L))
                 .thenReturn(Mono.just(true));
 
         StepVerifier.create(userUseCase.saveUser(user))
