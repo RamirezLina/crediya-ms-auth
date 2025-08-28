@@ -13,8 +13,7 @@ public class UserUseCase {
     private final UserRepository userRepository;
 
     public Mono<User> saveUser(User newUser) {
-        return Mono.just(newUser)
-                .doOnNext(user -> newUser.validate())
+        return newUser.validate()
                 .flatMap(user -> userRepository.existsByEmailOrIdentification(
                         user.getEmail(),
                         user.getIdentification()))

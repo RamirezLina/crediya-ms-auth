@@ -2,6 +2,7 @@ package co.com.crediya.usecase.user;
 
 import co.com.crediya.model.error.BusinessException;
 import co.com.crediya.model.user.User;
+import co.com.crediya.model.user.UserValidations;
 import co.com.crediya.model.user.gateways.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -24,13 +25,18 @@ class UserUseCaseTest {
     @InjectMocks
     private UserUseCase userUseCase;
 
+    private User user;
+
     @BeforeEach
     void setUp() {
+        user = User.builder().id("1").name("Juan")
+                .lastName("Perez").identification(123L)
+                .email("juan@mail.com").baseSalary(1000)
+                .build();
     }
 
     @Test
     void saveUser_shouldSave_whenUserIsValidAndNotExists() {
-        User user = User.builder().id("1").name("Juan").lastName("Perez").identification(123L).email("juan@mail.com").baseSalary(1000).build();
         when(userRepository.existsByEmailOrIdentification(eq("juan@mail.com"), eq(123L))).thenReturn(Mono.just(false));
         when(userRepository.save(any(User.class))).thenReturn(Mono.just(user));
 
@@ -41,8 +47,8 @@ class UserUseCaseTest {
 
     @Test
     void saveUser_shouldReturnError_whenUserAlreadyExists() {
-        User user = User.builder().id("1").name("Juan").lastName("Perez").identification(123L).email("juan@mail.com").baseSalary(1000).build();
-        when(userRepository.existsByEmailOrIdentification(eq("juan@mail.com"), eq(123L))).thenReturn(Mono.just(true));
+        when(userRepository.existsByEmailOrIdentification(eq("juan@mail.com"), eq(123L)))
+                .thenReturn(Mono.just(true));
 
         StepVerifier.create(userUseCase.saveUser(user))
                 .expectError(BusinessException.class)
@@ -51,15 +57,15 @@ class UserUseCaseTest {
 
     @Test
     void saveUser_shouldReturnError_whenUserIsInvalid() {
-        User user = User.builder().id("1").name("").lastName("Perez").identification(123L).email("juan@mail.com").baseSalary(1000).build();
-        StepVerifier.create(userUseCase.saveUser(user))
-                .expectError(IllegalArgumentException.class)
+        User invalidUser = User.builder().id("1").name("").lastName("Perez").identification(123L).email("juan@mail.com").baseSalary(1000).build();
+        StepVerifier.create(userUseCase.saveUser(invalidUser))
+                .expectErrorMatches(ex -> ex instanceof IllegalArgumentException &&
+                        UserValidations.INVALID_NAME.equals(ex.getMessage()))
                 .verify();
     }
 
     @Test
     void getAllUsers_shouldReturnUsers() {
-        User user = User.builder().id("1").name("Juan").lastName("Perez").identification(123L).email("juan@mail.com").baseSalary(1000).build();
         when(userRepository.findAll()).thenReturn(Flux.just(user));
         StepVerifier.create(userUseCase.getAllUsers())
                 .expectNext(user)
@@ -74,4 +80,3 @@ class UserUseCaseTest {
                 .verify();
     }
 }
-
