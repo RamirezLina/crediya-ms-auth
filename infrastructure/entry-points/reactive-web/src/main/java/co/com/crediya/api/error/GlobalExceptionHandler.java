@@ -29,6 +29,7 @@ public class GlobalExceptionHandler extends AbstractErrorWebExceptionHandler {
     private final Map<Class<? extends Throwable>, HttpStatus> statusByException =
             Map.of(
                     InvalidFormatException.class, HttpStatus.BAD_REQUEST,
+                    IllegalArgumentException.class, HttpStatus.BAD_REQUEST,
                     BusinessException.class, HttpStatus.BAD_REQUEST,
                     ConstraintViolationException.class, HttpStatus.BAD_REQUEST,
                     ServerWebInputException.class, HttpStatus.BAD_REQUEST,
