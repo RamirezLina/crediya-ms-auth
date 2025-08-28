@@ -13,8 +13,11 @@ public class UserUseCase {
     private final UserRepository userRepository;
 
     public Mono<User> saveUser(User newUser) {
-        newUser.validate();
-        return userRepository.existsByEmailOrIdentification(newUser.getEmail(), newUser.getIdentification())
+        return Mono.just(newUser)
+                .doOnNext(user -> newUser.validate())
+                .flatMap(user -> userRepository.existsByEmailOrIdentification(
+                        user.getEmail(),
+                        user.getIdentification()))
                 .flatMap(exists -> exists
                         ? Mono.error(BusinessException.Type.EMAIL_ALREADY_EXISTS.build())
                         : userRepository.save(newUser)
