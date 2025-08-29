@@ -33,6 +33,7 @@ adapters:
 routes:
   paths:
     users: "/api/v1/usuarios"
+    existUserByEmail: "/api/v1/usuarios/email/{email}"
     
 springdoc:
   api-docs:

@@ -54,6 +54,17 @@ public class UserHandler {
 
     }
 
+    public Mono<ServerResponse> listenExistUserByEmail(ServerRequest serverRequest) {
+        log.info("GET  {} : Consultando el usuario por email", userPath.getExistUserByEmail());
+        String email = serverRequest.pathVariable("email");
+        return userUseCase.existUserByEmail(email)
+                .flatMap(exists -> ServerResponse.ok()
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .bodyValue(exists))
+                .doOnError(UserHandler::logError);
+    }
+    
+
     private Mono<UserDto> validateDto(UserDto dto) {
         Set<ConstraintViolation<UserDto>> violations = validator.validate(dto) ;
         if (!violations.isEmpty()) {

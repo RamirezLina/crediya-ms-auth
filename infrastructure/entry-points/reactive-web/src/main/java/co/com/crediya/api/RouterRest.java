@@ -64,7 +64,8 @@ public class RouterRest {
             )})
     public RouterFunction<ServerResponse> routerFunction(UserHandler userHandler) {
         return route(GET(userPath.getUsers()), this.userHandler::listenGetAllUsers)
-                .andRoute(POST(userPath.getUsers()), this.userHandler::listenSaveUser);
+                .andRoute(POST(userPath.getUsers()), this.userHandler::listenSaveUser)
+                .andRoute(GET(userPath.getExistUserByEmail()), this.userHandler::listenExistUserByEmail);
     }
     
 }
