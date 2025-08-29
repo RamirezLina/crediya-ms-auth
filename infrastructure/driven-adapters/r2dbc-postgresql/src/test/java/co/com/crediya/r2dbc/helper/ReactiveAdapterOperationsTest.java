@@ -54,8 +54,7 @@ class ReactiveAdapterOperationsTest {
         DummyData data1 = new DummyData("1", "test1");
         DummyData data2 = new DummyData("2", "test2");
 
-        when(mapper.map(entity1, DummyData.class)).thenReturn(data1);
-        when(mapper.map(entity2, DummyData.class)).thenReturn(data2);
+    
         when(repository.saveAll(any(Flux.class))).thenReturn(Flux.just(data1, data2));
 
         StepVerifier.create(operations.saveAllEntities(Flux.just(entity1, entity2)))

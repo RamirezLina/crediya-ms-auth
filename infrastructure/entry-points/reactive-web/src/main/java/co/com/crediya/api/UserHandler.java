@@ -59,7 +59,7 @@ public class UserHandler {
         if (!violations.isEmpty()) {
             return Mono.error(new ConstraintViolationException(violations));
         }
-        log.info("POST {} : Se inicia el guardado del usuario con email {}", userPath.getUsers(), dto.email());
+        log.info("POST {} : Se inicia el guardado del usuario ", userPath.getUsers());
         return Mono.just(dto);
                 
     }

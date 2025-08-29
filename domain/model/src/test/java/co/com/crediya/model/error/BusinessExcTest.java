@@ -12,11 +12,10 @@ class BusinessExcTest {
         assertEquals("Ya existe una cuenta asociada al correo electronico o numero de identificacion", ex.getMessage());
     }
 
-
     @Test
-    void testConstructorWithTypeAndMessage() {
-        BusinessException ex = new BusinessException(BusinessException.Type.EMAIL_ALREADY_EXISTS, "Mensaje personalizado");
-        assertEquals("Mensaje personalizado", ex.getMessage());
+    void testBuildFromTypeWithPersonalizedMessage() {
+        BusinessException ex = BusinessException.Type.EMAIL_ALREADY_EXISTS.build("Mensaje personalizado");
+        assertEquals("Ya existe una cuenta asociada al correo electronico o numero de identificacion", ex.getMessage());
     }
 
 }
