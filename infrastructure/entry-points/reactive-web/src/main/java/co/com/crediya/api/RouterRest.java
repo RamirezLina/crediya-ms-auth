@@ -1,5 +1,6 @@
 package co.com.crediya.api;
 
+import co.com.crediya.api.config.OpenApiControllerDoc;
 import co.com.crediya.api.config.UserPath;
 import co.com.crediya.api.dto.UserDto;
 import co.com.crediya.api.error.ErrorPayload;
@@ -25,46 +26,17 @@ import static org.springframework.web.reactive.function.server.RouterFunctions.r
 
 @Configuration
 @RequiredArgsConstructor
-public class RouterRest {
+public class RouterRest implements OpenApiControllerDoc {
 
     private final UserPath userPath;
     private final UserHandler userHandler;
 
 
-    
     @Bean
-    @RouterOperations({
-            @RouterOperation(path = "/api/v1/usuarios",
-                    produces = {MediaType.APPLICATION_JSON_VALUE}, method = RequestMethod.GET, beanClass = UserHandler.class, beanMethod = "listenGetAllUsers",
-                    operation = @Operation(operationId = "GetAllUsers",
-                            summary = "Obtener todos los usuarios",
-                            tags = {"API Usuarios"},
-                            responses = {@ApiResponse(responseCode = "200", description = "Ususarios obtenidos correctamente",
-                                    content = @Content(mediaType = "application/json",
-                                            array = @ArraySchema(schema = @Schema(implementation = UserDto.class))))})
-            ),
-            @RouterOperation(path = "/api/v1/usuarios",
-                    produces = {MediaType.APPLICATION_JSON_VALUE}, consumes = {MediaType.APPLICATION_JSON_VALUE},
-                    method = RequestMethod.POST, beanClass = UserHandler.class, beanMethod = "listenSaveUser",
-                    operation = @Operation(operationId = "SaveUser",
-                            summary = "Registrar un nuevo usuario",
-                            tags = {"API Usuarios"},
-                            requestBody = @RequestBody(
-                                    required = true,
-                                    description = "Datos del usuario a guardar",
-                                    content = @Content(
-                                            mediaType = "application/json",
-                                            schema = @Schema(implementation = UserDto.class)
-                                    )
-                            ),
-                            responses = {@ApiResponse(responseCode = "200", description = "Usuario registrado correctamente.",
-                                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserDto.class))),
-                                    @ApiResponse(responseCode = "400", description = "Error de validacion",
-                                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorPayload.class)))})
-            )})
     public RouterFunction<ServerResponse> routerFunction(UserHandler userHandler) {
         return route(GET(userPath.getUsers()), this.userHandler::listenGetAllUsers)
-                .andRoute(POST(userPath.getUsers()), this.userHandler::listenSaveUser);
+                .andRoute(POST(userPath.getUsers()), this.userHandler::listenSaveUser)
+                .andRoute(GET(userPath.getExistUserByEmail()), this.userHandler::listenExistUserByEmail);
     }
-    
+
 }

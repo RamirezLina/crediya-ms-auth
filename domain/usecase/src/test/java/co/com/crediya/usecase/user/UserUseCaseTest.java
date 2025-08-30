@@ -1,6 +1,7 @@
 package co.com.crediya.usecase.user;
 
 import co.com.crediya.model.error.BusinessException;
+import co.com.crediya.model.error.DatabaseException;
 import co.com.crediya.model.user.User;
 import co.com.crediya.model.user.UserValidations;
 import co.com.crediya.model.user.gateways.UserRepository;
@@ -14,8 +15,8 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class UserUseCaseTest {
@@ -78,4 +79,37 @@ class UserUseCaseTest {
                 .expectError(RuntimeException.class)
                 .verify();
     }
+
+    @Test
+    void existUserByEmail_shouldReturnExists() {
+        when(userRepository.existsByEmailOrIdentification("correo@example.com", null)).thenReturn(Mono.just(true));
+        StepVerifier.create(userUseCase.existUserByEmail("correo@example.com"))
+                .expectNext(true)
+                .verifyComplete();
+        verify(userRepository, times(1))
+                .existsByEmailOrIdentification("correo@example.com", null);
+    }
+
+    @Test
+    void existUserByEmail_shouldReturnNotExists() {
+        when(userRepository.existsByEmailOrIdentification("correo@example.com", null))
+                .thenReturn(Mono.just(false));
+        StepVerifier.create(userUseCase.existUserByEmail("correo@example.com"))
+                .expectNext(false)
+                .verifyComplete();
+        verify(userRepository, times(1))
+                .existsByEmailOrIdentification("correo@example.com", null);
+    }
+
+    @Test
+    void existUserByEmail_ReturnError() {
+        when(userRepository.existsByEmailOrIdentification("correo@example.com", null))
+                .thenReturn(Mono.error(DatabaseException.Type.DATABASE_ERROR.build()));
+        StepVerifier.create(userUseCase.existUserByEmail("correo@example.com"))
+                .expectErrorMatches(ex-> ex instanceof DatabaseException)
+                .verify();
+        verify(userRepository, times(1))
+                .existsByEmailOrIdentification("correo@example.com", null);
+    }
+
 }

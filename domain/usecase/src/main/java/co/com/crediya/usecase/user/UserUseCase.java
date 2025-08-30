@@ -26,4 +26,8 @@ public class UserUseCase {
     public Flux<User> getAllUsers() {
         return userRepository.findAll();
     }
+
+    public Mono<Boolean> existUserByEmail(String email) {
+        return userRepository.existsByEmailOrIdentification(email, null);
+    }
 }
