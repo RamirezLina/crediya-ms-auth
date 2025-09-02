@@ -12,7 +12,7 @@ import java.time.LocalDate;
 @Builder(toBuilder = true)
 public class User {
 
-    private String id;
+    private Long id;
     private String name;
     private String lastName;
     private Long identification;
@@ -22,6 +22,13 @@ public class User {
     private String email;
     private Long rolId;
     private double baseSalary;
+    private String password;
+    private boolean isEnabled;
+    private boolean accountNoExpired;
+    private boolean accountNoLocked;
+    private boolean credentialNoExpired;
+    
+    
 
     public Mono<User> validate() {
         if (name == null || name.trim().isEmpty()) {
@@ -29,6 +36,9 @@ public class User {
         }
         if (lastName == null || lastName.trim().isEmpty()) {
             return Mono.error( new IllegalArgumentException(UserValidations.INVALID_LAST_NAME));
+        }
+        if (password == null || password.trim().isEmpty()) {
+            return Mono.error( new IllegalArgumentException(UserValidations.INVALID_PASSWORD));
         }
         if (identification == null  || identification.equals(0L)) {
             return Mono.error( new IllegalArgumentException(UserValidations.INVALID_IDENTIFICATION));
@@ -44,5 +54,14 @@ public class User {
         }
         
         return Mono.just(this);
+    }
+
+    public User setDefaultValues() {
+        this.isEnabled = true;
+        this.accountNoExpired = true;
+        this.accountNoLocked = true;
+        this.credentialNoExpired = true;
+        
+        return this;
     }
 }

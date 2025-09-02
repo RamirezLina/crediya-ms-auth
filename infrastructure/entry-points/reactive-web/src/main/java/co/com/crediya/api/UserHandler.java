@@ -35,7 +35,7 @@ public class UserHandler {
                 .map(userDtoMapper::toModel)
                 .doOnNext(user-> log.info("POST  {} [SAVE USER]: Iniciando el guardado del usuario", path.getUsers()))
                 .flatMap(userUseCase::saveUser)
-                .map(userDtoMapper::toDto)
+                .map(userDtoMapper::toResponseDto)
                 .flatMap(savedTask -> ServerResponse.ok()
                         .contentType(MediaType.APPLICATION_JSON)
                         .bodyValue(savedTask))
@@ -47,7 +47,7 @@ public class UserHandler {
         return ServerResponse.ok()
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(userUseCase.getAllUsers()
-                        .map(userDtoMapper::toDto)
+                        .map(userDtoMapper::toResponseDto)
                         .doOnError(UserHandler::logError), UserDto.class);
 
     }

@@ -14,6 +14,7 @@ public class UserUseCase {
 
     public Mono<User> saveUser(User newUser) {
         return newUser.validate()
+                .map(User::setDefaultValues)
                 .flatMap(user -> userRepository.existsByEmailOrIdentification(
                         user.getEmail(),
                         user.getIdentification()))

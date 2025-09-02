@@ -72,7 +72,7 @@ class UserHandlerTest {
                         .headers().getContentType()))
                 .verifyComplete();
 
-        verify(userDtoMapper, times(0)).toDto(any(User.class));
+        verify(userDtoMapper, times(0)).toResponseDto(any(User.class));
         verify(userUseCase, times(1)).getAllUsers();
         verifyNoMoreInteractions(userUseCase);
     }
@@ -80,7 +80,7 @@ class UserHandlerTest {
     @Test
     void listenSaveUser_Successfully() {
         when(userUseCase.saveUser(any(User.class))).thenReturn(Mono.just(user));
-        when(userDtoMapper.toDto(user)).thenReturn(userDto);
+        when(userDtoMapper.toResponseDto(user)).thenReturn(userDto);
         when(userDtoMapper.toModel(userDto)).thenReturn(user);
         when(path.getUsers()).thenReturn("/users");
         when(serverRequest.bodyToMono(UserDto.class)).thenReturn(Mono.just(userDto));
@@ -92,7 +92,7 @@ class UserHandlerTest {
                         .headers().getContentType()))
                 .verifyComplete();
 
-        verify(userDtoMapper, times(1)).toDto(any(User.class));
+        verify(userDtoMapper, times(1)).toResponseDto(any(User.class));
         verify(userDtoMapper, times(1)).toModel(any(UserDto.class));
         verify(userUseCase, times(1)).saveUser(any(User.class));
         verifyNoMoreInteractions(userUseCase);
