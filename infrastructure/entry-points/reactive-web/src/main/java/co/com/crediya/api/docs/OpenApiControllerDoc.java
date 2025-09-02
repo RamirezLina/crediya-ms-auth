@@ -1,4 +1,4 @@
-package co.com.crediya.api.config;
+package co.com.crediya.api.docs;
 
 import co.com.crediya.api.UserHandler;
 import co.com.crediya.api.dto.UserDto;
