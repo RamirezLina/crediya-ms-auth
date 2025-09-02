@@ -2,9 +2,11 @@ package co.com.crediya.r2dbc;
 
 import co.com.crediya.model.error.DatabaseException;
 import co.com.crediya.model.user.User;
+import co.com.crediya.model.user.UserSecurity;
 import co.com.crediya.model.user.gateways.UserRepository;
 import co.com.crediya.r2dbc.entity.UserEntity;
 import co.com.crediya.r2dbc.helper.ReactiveAdapterOperations;
+import co.com.crediya.r2dbc.mapper.UserWithRoleMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.reactivecommons.utils.ObjectMapper;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -23,8 +25,11 @@ public class UserReactiveRepositoryAdapter extends ReactiveAdapterOperations<
         UserReactiveRepository
         > implements UserRepository {
 
-    public UserReactiveRepositoryAdapter(UserReactiveRepository repository, ObjectMapper mapper) {
+    private final UserWithRoleMapper userWithRoleMapper;
+    
+    public UserReactiveRepositoryAdapter(UserReactiveRepository repository, ObjectMapper mapper, UserWithRoleMapper userWithRoleMapper) {
         super(repository, mapper, userEntity -> mapper.map(userEntity, User.class));
+        this.userWithRoleMapper = userWithRoleMapper;
     }
 
     @Override
@@ -46,6 +51,13 @@ public class UserReactiveRepositoryAdapter extends ReactiveAdapterOperations<
     @Override
     public Mono<Boolean> existsByEmailOrIdentification(String email, Long identification) {
         return repository.existsByEmailOrIdentification(email, identification)
+                .doOnError(UserReactiveRepositoryAdapter::logError);
+    }
+
+    @Override
+    public Mono<UserSecurity> findByEmailWithRole(String email) {
+        return repository.findByEmailWithRole(email)
+                .map(userWithRoleMapper::toModel)
                 .doOnError(UserReactiveRepositoryAdapter::logError);
     }
 
