@@ -5,9 +5,6 @@ import co.com.crediya.api.dto.DtoValidator;
 import co.com.crediya.api.dto.UserDto;
 import co.com.crediya.api.mapper.UserDtoMapper;
 import co.com.crediya.usecase.user.UserUseCase;
-import jakarta.validation.ConstraintViolation;
-import jakarta.validation.ConstraintViolationException;
-import jakarta.validation.Validator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
@@ -16,8 +13,6 @@ import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import org.springframework.web.server.ServerWebInputException;
 import reactor.core.publisher.Mono;
-
-import java.util.Set;
 
 @Component
 @RequiredArgsConstructor
