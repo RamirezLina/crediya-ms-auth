@@ -1,4 +1,4 @@
-package co.com.crediya.model.user;
+package co.com.crediya.model.validations;
 
 
 public class UserValidations {

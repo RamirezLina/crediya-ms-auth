@@ -1,6 +1,6 @@
 package co.com.crediya.api;
 
-import co.com.crediya.api.config.UserPath;
+import co.com.crediya.api.config.Path;
 import co.com.crediya.api.dto.UserDto;
 import co.com.crediya.api.mapper.UserDtoMapper;
 import co.com.crediya.model.user.User;
@@ -34,7 +34,7 @@ class UserHandlerTest {
     @Mock
     private Validator validator;
     @Mock
-    private UserPath userPath;
+    private Path path;
     @Mock
     private ServerRequest serverRequest;
 
@@ -63,7 +63,7 @@ class UserHandlerTest {
     @Test
     void listenGetAllUsers_shouldReturnUsers() {
         when(userUseCase.getAllUsers()).thenReturn(Flux.just(user));
-        when(userPath.getUsers()).thenReturn("/users");
+        when(path.getUsers()).thenReturn("/users");
 
         Mono<ServerResponse> response = userHandler.listenGetAllUsers(serverRequest);
 
@@ -82,7 +82,7 @@ class UserHandlerTest {
         when(userUseCase.saveUser(any(User.class))).thenReturn(Mono.just(user));
         when(userDtoMapper.toDto(user)).thenReturn(userDto);
         when(userDtoMapper.toModel(userDto)).thenReturn(user);
-        when(userPath.getUsers()).thenReturn("/users");
+        when(path.getUsers()).thenReturn("/users");
         when(serverRequest.bodyToMono(UserDto.class)).thenReturn(Mono.just(userDto));
 
         Mono<ServerResponse> response = userHandler.listenSaveUser(serverRequest);

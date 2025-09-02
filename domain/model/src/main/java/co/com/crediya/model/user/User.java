@@ -1,4 +1,5 @@
 package co.com.crediya.model.user;
+import co.com.crediya.model.validations.UserValidations;
 import lombok.*;
 import reactor.core.publisher.Mono;
 

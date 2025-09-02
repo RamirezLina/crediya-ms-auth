@@ -1,5 +1,6 @@
 package co.com.crediya.model.user;
 
+import co.com.crediya.model.validations.UserValidations;
 import org.junit.jupiter.api.Test;
 import reactor.test.StepVerifier;
 

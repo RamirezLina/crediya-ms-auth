@@ -3,7 +3,7 @@ package co.com.crediya.usecase.user;
 import co.com.crediya.model.error.BusinessException;
 import co.com.crediya.model.error.DatabaseException;
 import co.com.crediya.model.user.User;
-import co.com.crediya.model.user.UserValidations;
+import co.com.crediya.model.validations.UserValidations;
 import co.com.crediya.model.user.gateways.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
