@@ -34,6 +34,7 @@ routes:
   paths:
     users: "/api/v1/usuarios"
     existUserByEmail: "/api/v1/usuarios/email/{email}"
+    login: "/api/v1/login"
     
 springdoc:
   api-docs:
