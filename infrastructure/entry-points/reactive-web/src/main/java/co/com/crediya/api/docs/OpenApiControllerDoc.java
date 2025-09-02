@@ -59,5 +59,5 @@ public interface OpenApiControllerDoc {
                                     content = @Content(mediaType = "application/json", schema = @Schema(type = "boolean")))})
 
             )})
-    RouterFunction<ServerResponse> routerFunction(UserHandler userHandler);
+    RouterFunction<ServerResponse> routerUserFunction(UserHandler userHandler);
 }

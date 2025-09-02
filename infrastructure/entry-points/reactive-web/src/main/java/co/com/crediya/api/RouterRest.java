@@ -1,7 +1,7 @@
 package co.com.crediya.api;
 
 import co.com.crediya.api.docs.OpenApiControllerDoc;
-import co.com.crediya.api.config.UserPath;
+import co.com.crediya.api.config.Path;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,15 +16,21 @@ import static org.springframework.web.reactive.function.server.RouterFunctions.r
 @RequiredArgsConstructor
 public class RouterRest implements OpenApiControllerDoc {
 
-    private final UserPath userPath;
+    private final Path path;
     private final UserHandler userHandler;
+    private final AuthHandler authHandler;
 
 
     @Bean
-    public RouterFunction<ServerResponse> routerFunction(UserHandler userHandler) {
-        return route(GET(userPath.getUsers()), this.userHandler::listenGetAllUsers)
-                .andRoute(POST(userPath.getUsers()), this.userHandler::listenSaveUser)
-                .andRoute(GET(userPath.getExistUserByEmail()), this.userHandler::listenExistUserByEmail);
+    public RouterFunction<ServerResponse> routerUserFunction(UserHandler userHandler) {
+        return route(GET(path.getUsers()), this.userHandler::listenGetAllUsers)
+                .andRoute(POST(path.getUsers()), this.userHandler::listenSaveUser)
+                .andRoute(GET(path.getExistUserByEmail()), this.userHandler::listenExistUserByEmail);
     }
 
+    @Bean
+    public RouterFunction<ServerResponse> routerAuthFunction(AuthHandler authHandler) {
+        return route(POST(path.getLogin()), this.authHandler::listenLogIn);
+    }
+    
 }
