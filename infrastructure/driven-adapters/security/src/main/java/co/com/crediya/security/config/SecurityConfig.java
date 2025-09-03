@@ -30,7 +30,7 @@ public class SecurityConfig {
                 .csrf(ServerHttpSecurity.CsrfSpec::disable)
                 .authorizeExchange((authorize) -> authorize
                         .pathMatchers(path.getLogin()).permitAll()
-                        .pathMatchers(path.getUsers()+"/**").hasAnyRole("ADMIN", "ASESOR")
+                        .pathMatchers(path.getUsers()+"/**").hasAnyAuthority("ADMIN", "ASESOR")
                         .anyExchange().denyAll()
                 )
                 .addFilterAfter(jwtFilter, SecurityWebFiltersOrder.FIRST)
