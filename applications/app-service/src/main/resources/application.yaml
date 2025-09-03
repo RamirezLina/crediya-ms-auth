@@ -51,3 +51,9 @@ app:
     description: "Api para la gestion de usuarios de la plataforma CrediYa"
     version: 1.0.0
     server: http://localhost:8080
+    
+    
+jwt:
+  secret: "${JWT_SECRET}"
+  expiration: "${JWT_EXPIRATION}"
+  issuer: "${JWT_ISSUER}"

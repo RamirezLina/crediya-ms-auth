@@ -11,6 +11,7 @@ buildscript {
         jakartaValidationVersion = '3.0.2'
         openApiVersion = '2.6.0'
         nimbusJoseVersion = '10.4.2'
+        jwtVersion = '0.12.3'
 	}
 }
 
