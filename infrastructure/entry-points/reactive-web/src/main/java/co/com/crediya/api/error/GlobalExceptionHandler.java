@@ -54,7 +54,7 @@ public class GlobalExceptionHandler extends AbstractErrorWebExceptionHandler {
 
     private Mono<ServerResponse> renderErrorResponse(ServerRequest serverRequest) {
         Throwable error = getError(serverRequest);
-        HttpStatus status = defineHttpStatus((Exception) error);
+        HttpStatus status = defineHttpStatus( error);
 
         Map<String, Object> errorProperties = getErrorAttributes(serverRequest, ErrorAttributeOptions.defaults());
 
@@ -63,7 +63,7 @@ public class GlobalExceptionHandler extends AbstractErrorWebExceptionHandler {
                 .body(BodyInserters.fromValue(errorProperties));
     }
 
-    private HttpStatus defineHttpStatus(Exception exception) {
+    private HttpStatus defineHttpStatus(Throwable exception) {
         return statusByException.getOrDefault(
                 exception.getClass(),
                 HttpStatus.INTERNAL_SERVER_ERROR
