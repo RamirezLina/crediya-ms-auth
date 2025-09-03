@@ -4,7 +4,6 @@ public class BusinessException extends RuntimeException {
 
     public enum Type{
         EMAIL_ALREADY_EXISTS("Ya existe una cuenta asociada al correo electronico o numero de identificacion"),
-        BAD_CREDENTIALS("La contraseña no es correcta"),
         EMAIL_NOT_EXISTS("No existe un usuario asociado al correo electronico");
         private final String message;
 

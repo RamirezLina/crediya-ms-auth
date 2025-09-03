@@ -1,5 +1,6 @@
 package co.com.crediya.api.error;
 
+import co.com.crediya.model.error.AuthException;
 import co.com.crediya.model.error.BusinessException;
 import co.com.crediya.model.error.DatabaseException;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
@@ -34,7 +35,8 @@ public class GlobalExceptionHandler extends AbstractErrorWebExceptionHandler {
                     ConstraintViolationException.class, HttpStatus.BAD_REQUEST,
                     ServerWebInputException.class, HttpStatus.BAD_REQUEST,
                     WebExchangeBindException.class, HttpStatus.BAD_REQUEST,
-                    DatabaseException.class, HttpStatus.BAD_REQUEST
+                    DatabaseException.class, HttpStatus.BAD_REQUEST,
+                    AuthException.class, HttpStatus.BAD_REQUEST
             );
 
 
