@@ -2,7 +2,7 @@ package co.com.crediya.r2dbc;
 
 import co.com.crediya.model.error.DatabaseException;
 import co.com.crediya.model.user.User;
-import co.com.crediya.model.user.UserSecurity;
+import co.com.crediya.model.security.UserSecurity;
 import co.com.crediya.model.user.gateways.UserRepository;
 import co.com.crediya.r2dbc.entity.UserEntity;
 import co.com.crediya.r2dbc.helper.ReactiveAdapterOperations;
@@ -14,6 +14,8 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+
+import java.util.Objects;
 
 @Repository
 @Transactional
@@ -58,6 +60,7 @@ public class UserReactiveRepositoryAdapter extends ReactiveAdapterOperations<
     public Mono<UserSecurity> findByEmailWithRole(String email) {
         return repository.findByEmailWithRole(email)
                 .map(userWithRoleMapper::toModel)
+                .filter(Objects::nonNull)
                 .doOnError(UserReactiveRepositoryAdapter::logError);
     }
 

@@ -1,5 +1,6 @@
 package co.com.crediya.usecase.user;
 
+import co.com.crediya.model.security.gateways.PasswordEncoderGateway;
 import co.com.crediya.model.user.User;
 import co.com.crediya.model.user.gateways.UserRepository;
 import co.com.crediya.model.error.BusinessException;
@@ -11,6 +12,7 @@ import reactor.core.publisher.Mono;
 public class UserUseCase {
 
     private final UserRepository userRepository;
+    private final PasswordEncoderGateway passwordEncoderGateway;
 
     public Mono<User> saveUser(User newUser) {
         return newUser.validate()
@@ -20,8 +22,13 @@ public class UserUseCase {
                         user.getIdentification()))
                 .flatMap(exists -> exists
                         ? Mono.error(BusinessException.Type.EMAIL_ALREADY_EXISTS.build())
-                        : userRepository.save(newUser)
+                        : saveNewUser(newUser)
                 );
+    }
+
+    private Mono<User> saveNewUser(User newUser) {
+        newUser.setPassword(passwordEncoderGateway.encodePassword(newUser.getPassword()));
+        return userRepository.save(newUser);
     }
 
     public Flux<User> getAllUsers() {

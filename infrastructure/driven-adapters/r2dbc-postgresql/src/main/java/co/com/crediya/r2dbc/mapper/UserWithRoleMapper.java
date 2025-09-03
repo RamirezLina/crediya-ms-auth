@@ -1,6 +1,6 @@
 package co.com.crediya.r2dbc.mapper;
 
-import co.com.crediya.model.user.UserSecurity;
+import co.com.crediya.model.security.UserSecurity;
 import co.com.crediya.r2dbc.entity.UserWithRole;
 import org.springframework.stereotype.Component;
 
