@@ -1,8 +1,8 @@
 package co.com.crediya.api;
 
 import co.com.crediya.api.config.Path;
+import co.com.crediya.api.dto.CreateUserDto;
 import co.com.crediya.api.dto.DtoValidator;
-import co.com.crediya.api.dto.UserDto;
 import co.com.crediya.api.mapper.UserDtoMapper;
 import co.com.crediya.usecase.user.UserUseCase;
 import lombok.RequiredArgsConstructor;
@@ -28,10 +28,10 @@ public class UserHandler {
     }
     
     public Mono<ServerResponse> listenSaveUser(ServerRequest serverRequest) {
-        return serverRequest.bodyToMono(UserDto.class)
+        return serverRequest.bodyToMono(CreateUserDto.class)
                 .switchIfEmpty(Mono.error(new ServerWebInputException("El cuerpo de la solicitud es requerido")))
                 .flatMap(validator::validateDto)
-                .map(dto -> (UserDto) dto)
+                .map(dto -> (CreateUserDto) dto)
                 .map(userDtoMapper::toModel)
                 .doOnNext(user-> log.info("POST  {} [SAVE USER]: Iniciando el guardado del usuario", path.getUsers()))
                 .flatMap(userUseCase::saveUser)
@@ -48,7 +48,7 @@ public class UserHandler {
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(userUseCase.getAllUsers()
                         .map(userDtoMapper::toResponseDto)
-                        .doOnError(UserHandler::logError), UserDto.class);
+                        .doOnError(UserHandler::logError), CreateUserDto.class);
 
     }
 
