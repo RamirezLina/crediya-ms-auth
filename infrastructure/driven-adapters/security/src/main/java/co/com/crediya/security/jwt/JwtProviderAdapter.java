@@ -1,6 +1,5 @@
 package co.com.crediya.security.jwt;
 
-import co.com.crediya.model.error.JwtException;
 import co.com.crediya.model.security.UserSecurity;
 import co.com.crediya.model.security.gateways.JwtProvider;
 import io.jsonwebtoken.*;
@@ -25,7 +24,6 @@ public class JwtProviderAdapter implements JwtProvider {
     private String secret;
     @Value("${jwt.expiration}")
     private Integer expiration;
-
     @Value("${jwt.issuer}")
     private String issuer;
 

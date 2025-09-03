@@ -36,7 +36,7 @@ public class UserReactiveRepositoryAdapter extends ReactiveAdapterOperations<
 
     @Override
     public Mono<User> save(User user) {
-        log.info("Guardando usuario en base de datos");
+        log.info("[SAVE USER]: Guardando usuario en base de datos");
         return super.save(user)
                 .doOnError(UserReactiveRepositoryAdapter::logError)
                 .onErrorMap(DataIntegrityViolationException.class, DatabaseException.Type.ROL_NOT_EXISTS::build);
@@ -45,7 +45,7 @@ public class UserReactiveRepositoryAdapter extends ReactiveAdapterOperations<
 
     @Override
     public Flux<User> findAll() {
-        log.info("Recuperando usuarios de la base de datos");
+        log.info("[GET ALL USERS]: Recuperando usuarios de la base de datos");
         return super.findAll()
                 .doOnError(UserReactiveRepositoryAdapter::logError);
     }
