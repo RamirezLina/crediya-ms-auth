@@ -1,7 +1,7 @@
 package co.com.crediya.api.docs;
 
 import co.com.crediya.api.UserHandler;
-import co.com.crediya.api.dto.UserDto;
+import co.com.crediya.api.dto.CreateUserDto;
 import co.com.crediya.api.error.ErrorPayload;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -28,7 +28,7 @@ public interface OpenApiControllerDoc {
                             tags = {"API Usuarios"},
                             responses = {@ApiResponse(responseCode = "200", description = "Ususarios obtenidos correctamente",
                                     content = @Content(mediaType = "application/json",
-                                            array = @ArraySchema(schema = @Schema(implementation = UserDto.class))))})
+                                            array = @ArraySchema(schema = @Schema(implementation = CreateUserDto.class))))})
             ),
             @RouterOperation(path = "/api/v1/usuarios",
                     produces = {MediaType.APPLICATION_JSON_VALUE}, consumes = {MediaType.APPLICATION_JSON_VALUE},
@@ -41,11 +41,11 @@ public interface OpenApiControllerDoc {
                                     description = "Datos del usuario a guardar",
                                     content = @Content(
                                             mediaType = "application/json",
-                                            schema = @Schema(implementation = UserDto.class)
+                                            schema = @Schema(implementation = CreateUserDto.class)
                                     )
                             ),
                             responses = {@ApiResponse(responseCode = "200", description = "Usuario registrado correctamente.",
-                                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserDto.class))),
+                                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = CreateUserDto.class))),
                                     @ApiResponse(responseCode = "400", description = "Error de validacion",
                                             content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorPayload.class)))})
             ),

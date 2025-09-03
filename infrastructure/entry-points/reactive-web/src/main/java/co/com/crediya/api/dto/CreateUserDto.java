@@ -5,7 +5,7 @@ import jakarta.validation.constraints.*;
 
 import java.time.LocalDate;
 
-public record UserDto(
+public record CreateUserDto(
 
         @NotBlank(message = UserValidations.INVALID_NAME)
         String name,

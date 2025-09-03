@@ -2,6 +2,7 @@ package co.com.crediya.api;
 
 import co.com.crediya.api.config.Path;
 import co.com.crediya.api.dto.DtoValidator;
+import co.com.crediya.api.dto.TokenDto;
 import co.com.crediya.api.dto.UserLoginDto;
 import co.com.crediya.api.mapper.UserDtoMapper;
 import co.com.crediya.usecase.user.LoginUseCase;
@@ -35,6 +36,7 @@ public class AuthHandler {
                 .map(userDtoMapper::toLoginModel)
                 .doOnNext(user-> log.info("POST  {} [LOGIN USER]: Validando usuario para inicio de sesion", path.getLogin()))
                 .flatMap(loginUseCase::execute)
+                .map(TokenDto::new)
                 .flatMap(result -> ServerResponse.ok()
                         .contentType(MediaType.APPLICATION_JSON)
                         .bodyValue(result))
