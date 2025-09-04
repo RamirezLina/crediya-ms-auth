@@ -36,7 +36,7 @@ public class GlobalExceptionHandler extends AbstractErrorWebExceptionHandler {
                     ServerWebInputException.class, HttpStatus.BAD_REQUEST,
                     WebExchangeBindException.class, HttpStatus.BAD_REQUEST,
                     DatabaseException.class, HttpStatus.BAD_REQUEST,
-                    AuthException.class, HttpStatus.BAD_REQUEST
+                    AuthException.class, HttpStatus.valueOf(401)
             );
 
 

@@ -1,7 +1,6 @@
 package co.com.crediya.usecase.user;
 
 import co.com.crediya.model.error.BusinessException;
-import co.com.crediya.model.error.AuthException;
 import co.com.crediya.model.security.UserSecurity;
 import co.com.crediya.model.security.gateways.JwtProvider;
 import co.com.crediya.model.security.gateways.PasswordEncoderGateway;
@@ -22,6 +21,6 @@ public class LoginUseCase {
                 .switchIfEmpty(Mono.error(BusinessException.Type.EMAIL_NOT_EXISTS.build()))
                 .filter(user -> passwordEncoder.isPasswordCorrect(credentials.getPassword(), user.getPassword()))
                 .map(jwtProvider::generateToken)
-                .switchIfEmpty(Mono.error(AuthException.Type.BAD_CREDENTIALS.build()));
+                .switchIfEmpty(Mono.error(BusinessException.Type.BAD_CREDENTIALS.build()));
     }
 }

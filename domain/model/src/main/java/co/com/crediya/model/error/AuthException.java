@@ -5,8 +5,7 @@ public class AuthException extends RuntimeException {
     public enum Type {
         TOKEN_NOT_FOUND("La peticion no incluye token"),
         CREDENTIALS_ERROR("Error al validar el token: %s"),
-        NO_BEARER("Authenticacion invalida"),
-        BAD_CREDENTIALS("La contraseña no es correcta");
+        NO_BEARER("Authenticacion invalida");
      
         private final String message;
 
