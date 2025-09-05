@@ -31,7 +31,12 @@ public interface OpenApiControllerDoc {
                             tags = {"API Usuarios"},
                             responses = {@ApiResponse(responseCode = "200", description = "Ususarios obtenidos correctamente",
                                     content = @Content(mediaType = "application/json",
-                                            array = @ArraySchema(schema = @Schema(implementation = CreateUserDto.class))))})
+                                            array = @ArraySchema(schema = @Schema(implementation = CreateUserDto.class)))),
+                                    @ApiResponse(responseCode = "401", description = "No autenticado",
+                                            content = @Content(mediaType = "application/json")),
+                                    @ApiResponse(responseCode = "403", description = "Acceso prohibido: el usuario no esta autorizado",
+                                            content = @Content(mediaType = "application/json"))
+                            })
             ),
             @RouterOperation(path = "/api/v1/usuarios",
                     produces = {MediaType.APPLICATION_JSON_VALUE}, consumes = {MediaType.APPLICATION_JSON_VALUE},
@@ -50,7 +55,11 @@ public interface OpenApiControllerDoc {
                             responses = {@ApiResponse(responseCode = "200", description = "Usuario registrado correctamente.",
                                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = CreateUserDto.class))),
                                     @ApiResponse(responseCode = "400", description = "Error de validacion",
-                                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorPayload.class)))})
+                                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorPayload.class))),
+                                    @ApiResponse(responseCode = "401", description = "No autenticado",
+                                            content = @Content(mediaType = "application/json")),
+                                    @ApiResponse(responseCode = "403", description = "Acceso prohibido: el usuario no esta autorizado",
+                                            content = @Content(mediaType = "application/json"))})
             ),
             @RouterOperation(path = "/api/v1/usuarios/email/{email}",
                     produces = {MediaType.APPLICATION_JSON_VALUE}, method = RequestMethod.GET, beanClass = UserHandler.class, beanMethod = "listenExistUserByEmail",
@@ -59,30 +68,35 @@ public interface OpenApiControllerDoc {
                             tags = {"API Usuarios"},
                             parameters = {@Parameter(name = "email", description = "Email del usuario a buscar", required = true, in = ParameterIn.PATH)},
                             responses = {@ApiResponse(responseCode = "200", description = "Respuesta encontrada",
-                                    content = @Content(mediaType = "application/json", schema = @Schema(type = "boolean")))})
+                                    content = @Content(mediaType = "application/json", schema = @Schema(type = "boolean"))),
+                                    @ApiResponse(responseCode = "401", description = "No autenticado",
+                                            content = @Content(mediaType = "application/json")),
+                                    @ApiResponse(responseCode = "403", description = "Acceso prohibido: el usuario no esta autorizado",
+                                            content = @Content(mediaType = "application/json"))})
 
             )})
     RouterFunction<ServerResponse> routerUserFunction(UserHandler userHandler);
 
     @RouterOperations({
-    @RouterOperation(path = "/api/v1/login",
-            produces = {MediaType.APPLICATION_JSON_VALUE}, consumes = {MediaType.APPLICATION_JSON_VALUE},
-            method = RequestMethod.POST, beanClass = AuthHandler.class, beanMethod = "listenLogIn",
-            operation = @Operation(operationId = "Login",
-                    summary = "Inicio de sesion de usuario de la plataforma",
-                    tags = {"API LogIn"},
-                    requestBody = @RequestBody(
-                            required = true,
-                            description = "Crendenciales del usuario",
-                            content = @Content(
-                                    mediaType = "application/json",
-                                    schema = @Schema(implementation = UserLoginDto.class)
-                            )
-                    ),
-                    responses = {@ApiResponse(responseCode = "200", description = "El usuario a ingresado correctamente",
-                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = TokenDto.class))),
-                            @ApiResponse(responseCode = "400", description = "Error de validacion",
-                                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorPayload.class)))})
-    )})
+            @RouterOperation(path = "/api/v1/login",
+                    produces = {MediaType.APPLICATION_JSON_VALUE}, consumes = {MediaType.APPLICATION_JSON_VALUE},
+                    method = RequestMethod.POST, beanClass = AuthHandler.class, beanMethod = "listenLogIn",
+                    operation = @Operation(operationId = "Login",
+                            summary = "Inicio de sesion de usuario de la plataforma",
+                            tags = {"API LogIn"},
+                            requestBody = @RequestBody(
+                                    required = true,
+                                    description = "Crendenciales del usuario",
+                                    content = @Content(
+                                            mediaType = "application/json",
+                                            schema = @Schema(implementation = UserLoginDto.class)
+                                    )
+                            ),
+                            responses = {@ApiResponse(responseCode = "200", description = "El usuario a ingresado correctamente",
+                                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = TokenDto.class))),
+                                    @ApiResponse(responseCode = "400", description = "Error de validacion",
+                                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorPayload.class)))
+                            })
+            )})
     RouterFunction<ServerResponse> routerAuthFunction(AuthHandler authHandler);
 }
