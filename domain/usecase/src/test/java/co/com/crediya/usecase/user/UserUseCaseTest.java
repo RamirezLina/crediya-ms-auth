@@ -3,8 +3,9 @@ package co.com.crediya.usecase.user;
 import co.com.crediya.model.error.BusinessException;
 import co.com.crediya.model.error.DatabaseException;
 import co.com.crediya.model.user.User;
-import co.com.crediya.model.user.UserValidations;
+import co.com.crediya.model.validations.UserValidations;
 import co.com.crediya.model.user.gateways.UserRepository;
+import co.com.crediya.model.security.gateways.PasswordEncoderGateway;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -22,6 +23,9 @@ import static org.mockito.Mockito.*;
 class UserUseCaseTest {
     @Mock
     private UserRepository userRepository;
+    @Mock
+    private PasswordEncoderGateway passwordEncoderGateway;
+
     @InjectMocks
     private UserUseCase userUseCase;
 
@@ -29,19 +33,26 @@ class UserUseCaseTest {
 
     @BeforeEach
     void setUp() {
-        user = User.builder().id("1").name("Juan")
+        user = User.builder().id(1L).name("Juan")
                 .lastName("Perez").identification(123L)
                 .email("juan@mail.com").baseSalary(1000)
+                .password("plain")
                 .build();
     }
 
     @Test
     void saveUser_shouldSave_whenUserIsValidAndNotExists() {
         when(userRepository.existsByEmailOrIdentification("juan@mail.com", 123L)).thenReturn(Mono.just(false));
-        when(userRepository.save(any(User.class))).thenReturn(Mono.just(user));
+        when(passwordEncoderGateway.encodePassword("plain")).thenReturn("encoded");
+        when(userRepository.save(any(User.class))).thenAnswer(invocation -> Mono.just((User) invocation.getArgument(0)));
 
         StepVerifier.create(userUseCase.saveUser(user))
-                .expectNextMatches(u -> u.getId().equals("1"))
+                .expectNextMatches(u -> u.getId().equals(1L)
+                        && u.isEnabled()
+                        && u.isAccountNoExpired()
+                        && u.isAccountNoLocked()
+                        && u.isCredentialNoExpired()
+                        && "encoded".equals(u.getPassword()))
                 .verifyComplete();
     }
 
@@ -57,7 +68,7 @@ class UserUseCaseTest {
 
     @Test
     void saveUser_shouldReturnError_whenUserIsInvalid() {
-        User invalidUser = User.builder().id("1").name("").lastName("Perez").identification(123L).email("juan@mail.com").baseSalary(1000).build();
+        User invalidUser = User.builder().id(1L).name("").lastName("Perez").identification(123L).email("juan@mail.com").baseSalary(1000).build();
         StepVerifier.create(userUseCase.saveUser(invalidUser))
                 .expectErrorMatches(ex -> ex instanceof IllegalArgumentException &&
                         UserValidations.INVALID_NAME.equals(ex.getMessage()))

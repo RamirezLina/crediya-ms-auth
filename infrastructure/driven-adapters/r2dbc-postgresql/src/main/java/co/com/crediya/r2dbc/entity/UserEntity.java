@@ -39,10 +39,26 @@ public class UserEntity {
 
     @Column("email")
     private String email;
-
+    
     @Column("id_rol")
     private Long rolId;
-
+    
     @Column("salario_base")
     private double baseSalary;
+
+    @Column("password")
+    private String password;
+    
+    @Column("is_enabled")
+    private Boolean isEnabled;
+
+    @Column("account_no_expired")
+    private Boolean accountNoExpired;
+
+    @Column("account_no_locked")
+    private Boolean accountNoLocked;
+
+    @Column("credential_no_expired")
+    private Boolean credentialNoExpired;
+    
 }

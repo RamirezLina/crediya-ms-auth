@@ -1,5 +1,6 @@
 package co.com.crediya.api.error;
 
+import co.com.crediya.model.error.AuthException;
 import co.com.crediya.model.error.BusinessException;
 import co.com.crediya.model.error.DatabaseException;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
@@ -34,7 +35,8 @@ public class GlobalExceptionHandler extends AbstractErrorWebExceptionHandler {
                     ConstraintViolationException.class, HttpStatus.BAD_REQUEST,
                     ServerWebInputException.class, HttpStatus.BAD_REQUEST,
                     WebExchangeBindException.class, HttpStatus.BAD_REQUEST,
-                    DatabaseException.class, HttpStatus.BAD_REQUEST
+                    DatabaseException.class, HttpStatus.BAD_REQUEST,
+                    AuthException.class, HttpStatus.valueOf(401)
             );
 
 
@@ -54,7 +56,7 @@ public class GlobalExceptionHandler extends AbstractErrorWebExceptionHandler {
 
     private Mono<ServerResponse> renderErrorResponse(ServerRequest serverRequest) {
         Throwable error = getError(serverRequest);
-        HttpStatus status = defineHttpStatus((Exception) error);
+        HttpStatus status = defineHttpStatus( error);
 
         Map<String, Object> errorProperties = getErrorAttributes(serverRequest, ErrorAttributeOptions.defaults());
 
@@ -63,7 +65,7 @@ public class GlobalExceptionHandler extends AbstractErrorWebExceptionHandler {
                 .body(BodyInserters.fromValue(errorProperties));
     }
 
-    private HttpStatus defineHttpStatus(Exception exception) {
+    private HttpStatus defineHttpStatus(Throwable exception) {
         return statusByException.getOrDefault(
                 exception.getClass(),
                 HttpStatus.INTERNAL_SERVER_ERROR

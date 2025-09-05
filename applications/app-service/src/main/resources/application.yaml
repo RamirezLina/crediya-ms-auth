@@ -34,6 +34,7 @@ routes:
   paths:
     users: "/api/v1/usuarios"
     existUserByEmail: "/api/v1/usuarios/email/{email}"
+    login: "/api/v1/login"
     
 springdoc:
   api-docs:
@@ -50,3 +51,9 @@ app:
     description: "Api para la gestion de usuarios de la plataforma CrediYa"
     version: 1.0.0
     server: http://localhost:8080
+    
+    
+jwt:
+  secret: "${JWT_SECRET}"
+  expiration: "${JWT_EXPIRATION}"
+  issuer: "${JWT_ISSUER}"

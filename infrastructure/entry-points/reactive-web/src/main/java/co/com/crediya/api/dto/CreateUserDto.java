@@ -1,11 +1,11 @@
 package co.com.crediya.api.dto;
 
-import co.com.crediya.model.user.UserValidations;
+import co.com.crediya.model.validations.UserValidations;
 import jakarta.validation.constraints.*;
 
 import java.time.LocalDate;
 
-public record UserDto(
+public record CreateUserDto(
 
         @NotBlank(message = UserValidations.INVALID_NAME)
         String name,
@@ -36,6 +36,9 @@ public record UserDto(
         @NotNull(message = UserValidations.INVALID_SALARY)
         @DecimalMin(value = "0", message = UserValidations.INVALID_BASE_SALARY)
         @DecimalMax(value = "15000000", message = UserValidations.INVALID_BASE_SALARY)
-        double baseSalary
-) {
+        double baseSalary,
+
+        @NotBlank(message = UserValidations.INVALID_PASSWORD)
+        String password
+) implements IDto {
 }
