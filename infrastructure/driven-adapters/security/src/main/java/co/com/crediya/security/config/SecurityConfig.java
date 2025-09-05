@@ -30,6 +30,7 @@ public class SecurityConfig {
                 .csrf(ServerHttpSecurity.CsrfSpec::disable)
                 .authorizeExchange((authorize) -> authorize
                         .pathMatchers(path.getLogin()).permitAll()
+                        .pathMatchers( "/doc/**",  "/v3/api-docs/**").permitAll()
                         .pathMatchers(path.getUsers()).hasAnyAuthority("ADMIN", "ASESOR")
                         .anyExchange().authenticated()
                 )

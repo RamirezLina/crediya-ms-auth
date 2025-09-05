@@ -1,7 +1,10 @@
 package co.com.crediya.api.docs;
 
+import co.com.crediya.api.AuthHandler;
 import co.com.crediya.api.UserHandler;
 import co.com.crediya.api.dto.CreateUserDto;
+import co.com.crediya.api.dto.TokenDto;
+import co.com.crediya.api.dto.UserLoginDto;
 import co.com.crediya.api.error.ErrorPayload;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -60,4 +63,26 @@ public interface OpenApiControllerDoc {
 
             )})
     RouterFunction<ServerResponse> routerUserFunction(UserHandler userHandler);
+
+    @RouterOperations({
+    @RouterOperation(path = "/api/v1/login",
+            produces = {MediaType.APPLICATION_JSON_VALUE}, consumes = {MediaType.APPLICATION_JSON_VALUE},
+            method = RequestMethod.POST, beanClass = AuthHandler.class, beanMethod = "listenLogIn",
+            operation = @Operation(operationId = "Login",
+                    summary = "Inicio de sesion de usuario de la plataforma",
+                    tags = {"API LogIn"},
+                    requestBody = @RequestBody(
+                            required = true,
+                            description = "Crendenciales del usuario",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = UserLoginDto.class)
+                            )
+                    ),
+                    responses = {@ApiResponse(responseCode = "200", description = "El usuario a ingresado correctamente",
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = TokenDto.class))),
+                            @ApiResponse(responseCode = "400", description = "Error de validacion",
+                                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorPayload.class)))})
+    )})
+    RouterFunction<ServerResponse> routerAuthFunction(AuthHandler authHandler);
 }
