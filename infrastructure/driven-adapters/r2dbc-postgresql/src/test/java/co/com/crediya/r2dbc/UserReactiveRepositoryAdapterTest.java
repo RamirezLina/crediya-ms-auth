@@ -35,7 +35,7 @@ class UserReactiveRepositoryAdapterTest {
     @BeforeEach
     void setUp() {
         user = User.builder()
-                .id("1")
+                .id(1L)
                 .name("Juan")
                 .lastName("Perez")
                 .identification(123L)
@@ -53,7 +53,7 @@ class UserReactiveRepositoryAdapterTest {
         Mono<User> result = repositoryAdapter.save(user);
 
         StepVerifier.create(result)
-                .expectNextMatches(u -> u.getId().equals("1") && u.getName().equals("Juan"))
+                .expectNextMatches(u -> u.getId().equals(1L) && u.getName().equals("Juan"))
                 .verifyComplete();
         verify(repository, times(1)).save(any());
         verifyNoMoreInteractions(repository);
@@ -81,7 +81,7 @@ class UserReactiveRepositoryAdapterTest {
         Flux<User> result = repositoryAdapter.findAll();
 
         StepVerifier.create(result)
-                .expectNextMatches(u -> u.getId().equals("1"))
+                .expectNextMatches(u -> u.getId().equals(1L))
                 .verifyComplete();
     }
 

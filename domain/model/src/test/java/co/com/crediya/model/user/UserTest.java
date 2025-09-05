@@ -13,6 +13,7 @@ class UserTest {
                 .identification(123L)
                 .email("juan@mail.com")
                 .baseSalary(1000)
+                .password("password")
                 .build();
         StepVerifier.create(user.validate())
                 .expectNext(user)
@@ -30,7 +31,7 @@ class UserTest {
 
     @Test
     void validate_shouldThrow_whenLastNameIsInvalid() {
-        User user = User.builder().name("Juan").lastName("").identification(123L).email("juan@mail.com").baseSalary(1000).build();
+        User user = User.builder().name("Juan").lastName("").password("password").identification(123L).email("juan@mail.com").baseSalary(1000).build();
         StepVerifier.create(user.validate())
                 .expectErrorMatches(ex -> ex instanceof IllegalArgumentException &&
                         UserValidations.INVALID_LAST_NAME.equals(ex.getMessage()))
@@ -39,7 +40,7 @@ class UserTest {
 
     @Test
     void validate_shouldThrow_whenIdentificationIsInvalid() {
-        User user = User.builder().name("Juan").lastName("Perez").identification(0L).email("juan@mail.com").baseSalary(1000).build();
+        User user = User.builder().name("Juan").lastName("Perez").password("password").identification(0L).email("juan@mail.com").baseSalary(1000).build();
         StepVerifier.create(user.validate())
                 .expectErrorMatches(ex -> ex instanceof IllegalArgumentException &&
                         UserValidations.INVALID_IDENTIFICATION.equals(ex.getMessage()))
@@ -48,7 +49,7 @@ class UserTest {
 
     @Test
     void validate_shouldThrow_whenEmailIsInvalid() {
-        User user = User.builder().name("Juan").lastName("Perez").identification(123L).email("").baseSalary(1000).build();
+        User user = User.builder().name("Juan").lastName("Perez").password("password").identification(123L).email("").baseSalary(1000).build();
         StepVerifier.create(user.validate())
                 .expectErrorMatches(ex -> ex instanceof IllegalArgumentException &&
                         UserValidations.INVALID_EMAIL.equals(ex.getMessage()))
@@ -57,7 +58,7 @@ class UserTest {
 
     @Test
     void validate_shouldThrow_whenEmailFormatIsInvalid() {
-        User user = User.builder().name("Juan").lastName("Perez").identification(123L).email("juanmail.com").baseSalary(1000).build();
+        User user = User.builder().name("Juan").lastName("Perez").password("password").identification(123L).password("password").email("juanmail.com").baseSalary(1000).build();
         StepVerifier.create(user.validate())
                 .expectErrorMatches(ex -> ex instanceof IllegalArgumentException &&
                         UserValidations.INVALID_EMAIL_FORMAT.equals(ex.getMessage()))
@@ -66,7 +67,7 @@ class UserTest {
 
     @Test
     void validate_shouldThrow_whenBaseSalaryIsInvalid() {
-        User user = User.builder().name("Juan").lastName("Perez").identification(123L).email("juan@mail.com").baseSalary(-1).build();
+        User user = User.builder().name("Juan").lastName("Perez").password("password").identification(123L).email("juan@mail.com").baseSalary(-1).build();
         StepVerifier.create(user.validate())
                 .expectErrorMatches(ex -> ex instanceof IllegalArgumentException &&
                         UserValidations.INVALID_BASE_SALARY.equals(ex.getMessage()))
@@ -75,7 +76,7 @@ class UserTest {
 
     @Test
     void validate_shouldThrow_whenBaseSalaryIsTooHigh() {
-        User user = User.builder().name("Juan").lastName("Perez").identification(123L).email("juan@mail.com").baseSalary(20000000).build();
+        User user = User.builder().name("Juan").lastName("Perez").password("password").identification(123L).email("juan@mail.com").baseSalary(20000000).build();
         StepVerifier.create(user.validate())
                 .expectErrorMatches(ex -> ex instanceof IllegalArgumentException &&
                         UserValidations.INVALID_BASE_SALARY.equals(ex.getMessage()))
