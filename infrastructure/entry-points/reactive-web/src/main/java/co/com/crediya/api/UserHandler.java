@@ -8,6 +8,7 @@ import co.com.crediya.usecase.user.UserUseCase;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
@@ -26,14 +27,14 @@ public class UserHandler {
     private static void logError(Throwable exception) {
         log.error("Error Message: {} \n Stack trace: {}", exception.getMessage(), exception.getStackTrace());
     }
-    
+
     public Mono<ServerResponse> listenSaveUser(ServerRequest serverRequest) {
         return serverRequest.bodyToMono(CreateUserDto.class)
                 .switchIfEmpty(Mono.error(new ServerWebInputException("El cuerpo de la solicitud es requerido")))
                 .flatMap(validator::validateDto)
                 .map(dto -> (CreateUserDto) dto)
                 .map(userDtoMapper::toModel)
-                .doOnNext(user-> log.info("POST  {} [SAVE USER]: Iniciando el guardado del usuario", path.getUsers()))
+                .doOnNext(user -> log.info("POST  {} [SAVE USER]: Iniciando el guardado del usuario", path.getUsers()))
                 .flatMap(userUseCase::saveUser)
                 .map(userDtoMapper::toResponseDto)
                 .flatMap(savedTask -> ServerResponse.ok()
@@ -43,7 +44,7 @@ public class UserHandler {
     }
 
     public Mono<ServerResponse> listenGetAllUsers(ServerRequest serverRequest) {
-        log.info("GET  {} [GET ALL USERS]: Obteniendo los usuarios registrados", path.getUsers() );
+        log.info("GET  {} [GET ALL USERS]: Obteniendo los usuarios registrados", path.getUsers());
         return ServerResponse.ok()
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(userUseCase.getAllUsers()
@@ -52,6 +53,7 @@ public class UserHandler {
 
     }
 
+    @PreAuthorize("hasAuthority('USER')")
     public Mono<ServerResponse> listenExistUserByEmail(ServerRequest serverRequest) {
         log.info("GET  {} [EXIST USER BY EMAIL] : Consultando el usuario por email", path.getExistUserByEmail());
         String email = serverRequest.pathVariable("email");
