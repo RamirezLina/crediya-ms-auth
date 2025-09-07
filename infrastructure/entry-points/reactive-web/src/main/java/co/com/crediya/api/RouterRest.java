@@ -25,6 +25,7 @@ public class RouterRest implements OpenApiControllerDoc {
     public RouterFunction<ServerResponse> routerUserFunction(UserHandler userHandler) {
         return route(GET(path.getUsers()), this.userHandler::listenGetAllUsers)
                 .andRoute(POST(path.getUsers()), this.userHandler::listenSaveUser)
+                .andRoute(GET(path.getGetUserByEmail()), this.userHandler::listenGetUserByEmail)
                 .andRoute(GET(path.getExistUserByEmail()), this.userHandler::listenExistUserByEmail);
     }
 
