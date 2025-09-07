@@ -74,7 +74,22 @@ public interface OpenApiControllerDoc {
                                     @ApiResponse(responseCode = "403", description = "Acceso prohibido: el usuario no esta autorizado",
                                             content = @Content(mediaType = "application/json"))})
 
-            )})
+            ),
+            @RouterOperation(path = "/api/v1/usuarios/detail/{email}",
+                    produces = {MediaType.APPLICATION_JSON_VALUE}, method = RequestMethod.GET, beanClass = UserHandler.class, beanMethod = "listenGetUserByEmail",
+                    operation = @Operation(operationId = "GetUserByEmail",
+                            summary = "Obtener la inforamcion de un usuario segun el email",
+                            tags = {"API Usuarios"},
+                            parameters = {@Parameter(name = "email", description = "Email del usuario a buscar", required = true, in = ParameterIn.PATH)},
+                            responses = {@ApiResponse(responseCode = "200", description = "Usuario encontrado",
+                                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = CreateUserDto.class))),
+                                    @ApiResponse(responseCode = "400", description = "Error de validacion",
+                                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorPayload.class))),
+                                    @ApiResponse(responseCode = "401", description = "No autenticado",
+                                            content = @Content(mediaType = "application/json")),
+                                    @ApiResponse(responseCode = "403", description = "Acceso prohibido: el usuario no esta autorizado",
+                                            content = @Content(mediaType = "application/json"))})
+    )})
     RouterFunction<ServerResponse> routerUserFunction(UserHandler userHandler);
 
     @RouterOperations({

@@ -10,6 +10,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 public class Path {
     private String users;
     private String existUserByEmail;
+    private String getUserByEmail;
     private String login;
     
 }

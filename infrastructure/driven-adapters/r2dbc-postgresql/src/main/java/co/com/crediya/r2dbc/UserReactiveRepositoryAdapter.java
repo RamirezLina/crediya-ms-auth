@@ -51,6 +51,14 @@ public class UserReactiveRepositoryAdapter extends ReactiveAdapterOperations<
     }
 
     @Override
+    public Mono<User> getByEmail(String email) {
+        return repository.findByEmail(email)
+                .map(super::toEntity)
+                .filter(Objects::nonNull)
+                .doOnError(UserReactiveRepositoryAdapter::logError);
+    }
+
+    @Override
     public Mono<Boolean> existsByEmailOrIdentification(String email, Long identification) {
         return repository.existsByEmailOrIdentification(email, identification)
                 .doOnError(UserReactiveRepositoryAdapter::logError);

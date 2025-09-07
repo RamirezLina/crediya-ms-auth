@@ -16,7 +16,7 @@ import reactor.test.StepVerifier;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class LoginUseCaseTest {
@@ -61,6 +61,11 @@ class LoginUseCaseTest {
         StepVerifier.create(loginUseCase.execute(creds))
                 .expectNext("jwt-token")
                 .verifyComplete();
+
+        verify(userRepository, times(1)).findByEmailWithRole("user@mail.com");
+        verify(passwordEncoder, times(1)).isPasswordCorrect("plain", "encoded");
+        verify(jwtProvider, times(1)).generateToken(any(UserSecurity.class));
+        verifyNoMoreInteractions(userRepository, passwordEncoder, jwtProvider);
     }
 
     @Test
@@ -70,6 +75,9 @@ class LoginUseCaseTest {
         StepVerifier.create(loginUseCase.execute(creds))
                 .expectError(BusinessException.class)
                 .verify();
+
+        verify(userRepository, times(1)).findByEmailWithRole("user@mail.com");
+        verifyNoInteractions(passwordEncoder, jwtProvider);
     }
 
     @Test
@@ -80,6 +88,11 @@ class LoginUseCaseTest {
         StepVerifier.create(loginUseCase.execute(creds))
                 .expectError(BusinessException.class)
                 .verify();
+
+        verify(userRepository, times(1)).findByEmailWithRole("user@mail.com");
+        verify(passwordEncoder, times(1)).isPasswordCorrect("plain", "encoded");
+        verifyNoInteractions(jwtProvider);
+        verifyNoMoreInteractions(userRepository, passwordEncoder);
     }
 }
 

@@ -63,4 +63,16 @@ public class UserHandler {
                         .bodyValue(exists))
                 .doOnError(UserHandler::logError);
     }
+
+    @PreAuthorize("hasAuthority('ASESOR')")
+    public Mono<ServerResponse> listenGetUserByEmail(ServerRequest serverRequest) {
+        log.info("GET  {} [GET USER BY EMAIL] : Consultando el usuario por email", path.getGetUserByEmail());
+        return Mono.just(serverRequest.pathVariable("email"))
+                .flatMap(userUseCase::getUserByEmail)
+                .map(userDtoMapper::toResponseDto)
+                .flatMap(exists -> ServerResponse.ok()
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .bodyValue(exists))
+                .doOnError(UserHandler::logError);
+    }
 }

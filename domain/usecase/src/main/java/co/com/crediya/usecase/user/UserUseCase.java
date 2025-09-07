@@ -35,6 +35,11 @@ public class UserUseCase {
         return userRepository.findAll();
     }
 
+    public Mono<User> getUserByEmail(String email) {
+        return userRepository.getByEmail(email)
+                .switchIfEmpty(Mono.error(BusinessException.Type.EMAIL_NOT_EXISTS.build()));
+    }
+
     public Mono<Boolean> existUserByEmail(String email) {
         return userRepository.existsByEmailOrIdentification(email, null);
     }
