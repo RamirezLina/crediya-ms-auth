@@ -12,6 +12,8 @@ public interface UserRepository {
 
     Flux<User> findAll();
 
+    Mono<User> getByEmail(String email);
+
     Mono<Boolean> existsByEmailOrIdentification(String email, Long identification);
 
     Mono<UserSecurity> findByEmailWithRole(String email);
