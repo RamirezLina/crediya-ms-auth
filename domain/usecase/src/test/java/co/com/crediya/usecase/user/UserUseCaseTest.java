@@ -54,6 +54,11 @@ class UserUseCaseTest {
                         && u.isCredentialNoExpired()
                         && "encoded".equals(u.getPassword()))
                 .verifyComplete();
+
+        verify(userRepository, times(1)).existsByEmailOrIdentification("juan@mail.com", 123L);
+        verify(passwordEncoderGateway, times(1)).encodePassword("plain");
+        verify(userRepository, times(1)).save(any(User.class));
+        verifyNoMoreInteractions(userRepository, passwordEncoderGateway);
     }
 
     @Test
@@ -64,6 +69,10 @@ class UserUseCaseTest {
         StepVerifier.create(userUseCase.saveUser(user))
                 .expectError(BusinessException.class)
                 .verify();
+
+        verify(userRepository, times(1)).existsByEmailOrIdentification("juan@mail.com", 123L);
+        verifyNoInteractions(passwordEncoderGateway);
+        verify(userRepository, never()).save(any(User.class));
     }
 
     @Test
@@ -73,6 +82,8 @@ class UserUseCaseTest {
                 .expectErrorMatches(ex -> ex instanceof IllegalArgumentException &&
                         UserValidations.INVALID_NAME.equals(ex.getMessage()))
                 .verify();
+
+        verifyNoInteractions(userRepository, passwordEncoderGateway);
     }
 
     @Test
@@ -81,6 +92,9 @@ class UserUseCaseTest {
         StepVerifier.create(userUseCase.getAllUsers())
                 .expectNext(user)
                 .verifyComplete();
+
+        verify(userRepository, times(1)).findAll();
+        verifyNoMoreInteractions(userRepository);
     }
 
     @Test
@@ -89,6 +103,8 @@ class UserUseCaseTest {
         StepVerifier.create(userUseCase.getAllUsers())
                 .expectError(RuntimeException.class)
                 .verify();
+
+        verify(userRepository, times(1)).findAll();
     }
 
     @Test
@@ -99,6 +115,7 @@ class UserUseCaseTest {
                 .verifyComplete();
         verify(userRepository, times(1))
                 .existsByEmailOrIdentification("correo@example.com", null);
+        verifyNoMoreInteractions(userRepository);
     }
 
     @Test
@@ -110,6 +127,7 @@ class UserUseCaseTest {
                 .verifyComplete();
         verify(userRepository, times(1))
                 .existsByEmailOrIdentification("correo@example.com", null);
+        verifyNoMoreInteractions(userRepository);
     }
 
     @Test
@@ -121,6 +139,31 @@ class UserUseCaseTest {
                 .verify();
         verify(userRepository, times(1))
                 .existsByEmailOrIdentification("correo@example.com", null);
+        verifyNoMoreInteractions(userRepository);
+    }
+
+    @Test
+    void getUserByEmail_shouldReturnUser_whenExists() {
+        when(userRepository.getByEmail("juan@mail.com")).thenReturn(Mono.just(user));
+
+        StepVerifier.create(userUseCase.getUserByEmail("juan@mail.com"))
+                .expectNext(user)
+                .verifyComplete();
+
+        verify(userRepository, times(1)).getByEmail("juan@mail.com");
+        verifyNoMoreInteractions(userRepository);
+    }
+
+    @Test
+    void getUserByEmail_shouldError_whenNotFound() {
+        when(userRepository.getByEmail("juan@mail.com")).thenReturn(Mono.empty());
+
+        StepVerifier.create(userUseCase.getUserByEmail("juan@mail.com"))
+                .expectError(BusinessException.class)
+                .verify();
+
+        verify(userRepository, times(1)).getByEmail("juan@mail.com");
+        verifyNoMoreInteractions(userRepository);
     }
 
 }
