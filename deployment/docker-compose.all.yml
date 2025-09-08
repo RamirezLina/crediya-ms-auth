@@ -1,0 +1,56 @@
+services:
+  postgres:
+    image: postgres:15
+    container_name: postgres-crediya
+    restart: on-failure
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: adminpassword
+    ports:
+      - "5432:5432"
+    networks:
+      - crediya-net
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+      - db-data-crediya:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U admin"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  ms-authentication:
+    build:
+      context: ..
+      dockerfile: deployment/Dockerfile
+    container_name: ms-authentication
+    ports:
+      - "8080:8080"
+    networks:
+      - crediya-net
+    env_file:
+      - .env.auth
+    depends_on:
+      postgres:
+        condition: service_healthy
+        
+  ms-loan-applications:
+    build:
+      context: ../../ms-loan-applications
+      dockerfile: deployment/Dockerfile
+    env_file:
+      - .env.loan
+    ports:
+      - "8081:8081"
+    networks:
+      - crediya-net
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+networks:
+  crediya-net:
+    name: crediya-net
+
+volumes:
+  db-data-crediya:
