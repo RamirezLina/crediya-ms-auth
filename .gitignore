@@ -339,3 +339,6 @@ build-cache
 /local/
 .env
 AGENTS.md
+/deployment/init.sql
+/deployment/.env.auth
+/deployment/.env.loan
