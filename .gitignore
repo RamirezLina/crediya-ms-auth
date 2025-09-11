@@ -342,3 +342,4 @@ AGENTS.md
 /deployment/init.sql
 /deployment/.env.auth
 /deployment/.env.loan
+/deployment/.env.postgres
