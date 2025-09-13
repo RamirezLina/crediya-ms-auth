@@ -64,7 +64,7 @@ public class UserHandler {
                 .doOnError(UserHandler::logError);
     }
 
-    @PreAuthorize("hasAuthority('ASESOR')")
+    @PreAuthorize("hasAuthority('ASESOR') or hasAuthority('USER')")
     public Mono<ServerResponse> listenGetUserByEmail(ServerRequest serverRequest) {
         log.info("GET  {} [GET USER BY EMAIL] : Consultando el usuario por email", path.getGetUserByEmail());
         return Mono.just(serverRequest.pathVariable("email"))
